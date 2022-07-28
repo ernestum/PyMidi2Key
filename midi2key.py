@@ -25,7 +25,7 @@ def pick_midi_input_device(device_filter = ""):
         try:
             chosen_idx = int(input(f"pick midi device (0-{len(in_device_ids)-1}):"))
         except ValueError:
-            warnings.warn("can't parse this")
+            warnings.warn("Can't parse this")
     print(f"Using {pygame.midi.get_device_info(in_device_ids[chosen_idx])[1].decode()}")
     return pygame.midi.Input(in_device_ids[chosen_idx])
 
@@ -74,6 +74,6 @@ if __name__ == "__main__":
                 print(event)
                 print()
                 handle_event(event)
-            time.sleep(0.02)
+            time.sleep(0.02)  # reasonably responsive and not too much CPU load
     finally:
         device.close()
