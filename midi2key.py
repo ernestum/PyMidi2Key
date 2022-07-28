@@ -1,21 +1,24 @@
 import time
 import os
+import sys
 import warnings
 import pygame.midi
 import pyautogui
 
 pygame.midi.init()
 
-def midi_input_device_ids():
-    return [i for i in range(pygame.midi.get_count()) if pygame.midi.get_device_info(i)[2] == 1]
+def midi_input_device_ids(device_filter = ""):
+    return [i for i in range(pygame.midi.get_count()) if device_filter in pygame.midi.get_device_info(i)[1].decode() and pygame.midi.get_device_info(i)[2] == 1]
 
-def pick_midi_input_device(chosen_idx = -1):
-    in_device_ids = midi_input_device_ids()
+def pick_midi_input_device(device_filter = ""):
+    in_device_ids = midi_input_device_ids(device_filter)
     if len(in_device_ids) == 0:
         warnings.warn("no midi input devices found!")
         return None
     if len(in_device_ids) == 1:
         chosen_idx = 0
+    else:
+        chosen_idx = -1
     while not 0 <= chosen_idx <= len(in_device_ids):
         for num, idx in enumerate(in_device_ids):
             print(f"{num}: {pygame.midi.get_device_info(idx)[1].decode()}")
@@ -60,7 +63,7 @@ def handle_event(event):
             
 
 if __name__ == "__main__":
-    device = pick_midi_input_device()
+    device = pick_midi_input_device(device_filter = sys.argv[1] if len(sys.argv) > 1 else "")
     if device is None:
         sys.exit(1)
     try:
