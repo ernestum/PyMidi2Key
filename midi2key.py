@@ -26,26 +26,26 @@ def pick_midi_input_device(chosen_idx = -1):
     print(f"Using {pygame.midi.get_device_info(in_device_ids[chosen_idx])[1].decode()}")
     return pygame.midi.Input(in_device_ids[chosen_idx])
 
-held_screens = set()
+held_tags= set()
 
 def handle_event(event):
     (status, data1, data2, data3), timestamp = event
 
-    if 41 <= data1 <= 49: # Screen Switching Logic
-        screen = data1 - 41 + 1
+    if 41 <= data1 <= 49: # Tag switching logic for AwesomeWM. Press a chord to select multiple tags!
+        tag = data1 - 41 + 1
         down = status == 144
         if down:
-            held_screens.add(screen)
-            if len(held_screens) > 1:
+            held_tags.add(tag)
+            if len(held_tags) > 1:
                 pyautogui.keyDown('ctrl')
             pyautogui.keyDown('winleft')
-            pyautogui.keyDown(str(screen))
+            pyautogui.keyDown(str(tag))
         else:
-            if len(held_screens) > 1:
+            if len(held_tags) > 1:
                 pyautogui.keyUp('ctrl')
             pyautogui.keyUp('winleft')
-            pyautogui.keyUp(str(screen))
-            held_screens.remove(screen)
+            pyautogui.keyUp(str(tag))
+            held_tags.remove(tag)
 
     if status == 144 and data1 == 57: # Copy
         pyautogui.hotkey('ctrl', 'c')
